@@ -30,95 +30,93 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         try {
-            // ✅ Ruta corregida: /api/auth/login
+            console.log('Enviando datos de login:', { email: username });
+            
+            // ✅ Usar la ruta correcta según tu backend
             const response = await fetch('/api/autenticacion/login', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
                 },
                 body: JSON.stringify({ 
-                    email: username, // El backend espera 'email'
+                    email: username,
                     password: password 
                 })
             });
 
-            const data = await response.json();
+            console.log('Respuesta del servidor:', response.status, response.statusText);
+            
+            // ✅ MANEJO MEJORADO DE LA RESPUESTA
+            let data;
+            try {
+                data = await response.json();
+                console.log('Datos recibidos:', data);
+            } catch (parseError) {
+                console.error('Error al parsear JSON:', parseError);
+                throw new Error('Respuesta del servidor no válida');
+            }
 
-            if (response.ok && !data.error) {
-                // ✅ Estructura de respuesta corregida
-                const { token, usuario } = data.body.data;
+            if (response.ok) {
+                // ✅ ADAPTARSE A DIFERENTES ESTRUCTURAS DE RESPUESTA
+                let token, usuario;
                 
-                // Guardar token (sin localStorage por restricciones de Claude)
-                sessionStorage.setItem('token', token);
-                sessionStorage.setItem('usuario', JSON.stringify(usuario));
-                
-                showMessage('¡Login exitoso! Redirigiendo...', 'success');
-                
-                // ✅ Redirigir a la página de productos
-                setTimeout(() => {
-                    window.location.href = '/productos';
-                }, 1500);
+                // Verificar diferentes estructuras posibles
+                if (data.body && data.body.data) {
+                    // Estructura: { body: { data: { token, usuario } } }
+                    token = data.body.data.token;
+                    usuario = data.body.data.usuario;
+                } else if (data.data) {
+                    // Estructura: { data: { token, usuario } }
+                    token = data.data.token;
+                    usuario = data.data.usuario;
+                } else if (data.token) {
+                    // Estructura directa: { token, usuario }
+                    token = data.token;
+                    usuario = data.usuario;
+                } else {
+                    console.error('Estructura de respuesta no reconocida:', data);
+                    throw new Error('Estructura de respuesta no válida');
+                }
+
+                if (token) {
+                    // ✅ Guardar en sessionStorage
+                    sessionStorage.setItem('token', token);
+                    if (usuario) {
+                        sessionStorage.setItem('usuario', JSON.stringify(usuario));
+                    }
+                    
+                    showMessage('¡Login exitoso! Redirigiendo...', 'success');
+                    
+                    // Redirigir después de un breve delay
+                    setTimeout(() => {
+                        window.location.href = '/productos';
+                    }, 1500);
+                } else {
+                    throw new Error('Token no recibido del servidor');
+                }
             } else {
-                showMessage(data.body || 'Error al iniciar sesión. Verifica tus credenciales.', 'error');
+                // ✅ MANEJO DE ERRORES MEJORADO
+                let errorMessage = 'Error al iniciar sesión. Verifica tus credenciales.';
+                
+                if (data.message) {
+                    errorMessage = data.message;
+                } else if (data.body && typeof data.body === 'string') {
+                    errorMessage = data.body;
+                } else if (data.error) {
+                    errorMessage = data.error;
+                }
+                
+                console.error('Error del servidor:', data);
+                showMessage(errorMessage, 'error');
             }
         } catch (error) {
             console.error('Error en login:', error);
             showMessage('Error de conexión. Intenta de nuevo más tarde.', 'error');
-        }
-    });
-
-    // Registro
-    registerForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-
-        const username = registerForm.querySelector('input[placeholder="Nombre de usuario"]').value.trim();
-        const email = registerForm.querySelector('input[type="email"]').value.trim();
-        const password = registerForm.querySelector('input[type="password"]').value.trim();
-
-        if (!username || !email || !password) {
-            showMessage('Por favor, completa todos los campos para registrarte.', 'error');
-            return;
-        }
-
-        // ✅ Validaciones adicionales
-        if (password.length < 6) {
-            showMessage('La contraseña debe tener al menos 6 caracteres.', 'error');
-            return;
-        }
-
-        if (!isValidEmail(email)) {
-            showMessage('Por favor, ingresa un email válido.', 'error');
-            return;
-        }
-
-        try {
-            // ✅ Ruta corregida: /api/auth/register
-            const response = await fetch('/api/autenticacion/register', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ 
-                    nombre: username,
-                    email: email, 
-                    password: password 
-                })
-            });
-
-            const data = await response.json();
-
-            if (response.ok && !data.error) {
-                showMessage('¡Registro exitoso! Ya puedes iniciar sesión.', 'success');
-                container.classList.remove('active');
-                
-                // Limpiar formulario
-                registerForm.reset();
-            } else {
-                showMessage(data.body || 'Error al registrarse. Verifica tus datos.', 'error');
-            }
-        } catch (error) {
-            console.error('Error en registro:', error);
-            showMessage('Error de conexión. Intenta de nuevo más tarde.', 'error');
+        } finally {
+            // Restaurar botón
+            submitBtn.textContent = originalText;
+            submitBtn.disabled = false;
         }
     });
 

@@ -15,10 +15,7 @@ router.post('/login', async function (req, res) {
         
         const resultado = await controlador.login(email, password);
         
-        respuesta.success(req, res, {
-            mensaje: 'Login exitoso',
-            data: resultado
-        }, 200);
+        respuesta.exito(res, 'Login exitoso', resultado, 200);
     } catch (error) {
         console.error('Error en login:', error);
         respuesta.error(req, res, error.message, 401);
