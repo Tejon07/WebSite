@@ -186,4 +186,9 @@ process.on('SIGINT', () => {
     process.exit(0);
 });
 
+// Manejo del favicon para evitar errores 404
+app.get('/favicon.ico', (req, res) => {
+    res.status(204).end(); // Devuelve "No Content" sin error
+});
+
 module.exports = app;

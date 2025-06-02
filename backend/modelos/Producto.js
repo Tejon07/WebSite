@@ -6,7 +6,7 @@ const dbConfig = {
     host: '127.0.0.1',
     user: 'root',
     password: 'gabrielxd86', 
-    database: 'ecomerce_db',
+    database: 'ecommerce',
     port: 3306
 };
 

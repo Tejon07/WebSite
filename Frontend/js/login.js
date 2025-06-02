@@ -191,7 +191,7 @@ loginForm.addEventListener('submit', async (e) => {
         .then(data => {
             if (!data.error) {
                 // Usuario ya logueado, redirigir
-                window.location.href = '../vistas/usuarios.html';
+                window.location.href = 'usuarios.html';
             }
         })
         .catch(() => {
