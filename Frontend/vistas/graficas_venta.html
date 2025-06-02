@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gráficas de Ventas | ModaElegante</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="../css/graficas_venta.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <!-- Sidebar -->
+  <div class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <a href="#" class="logo">
+        <i class="fas fa-tshirt"></i> ModaElegante
+      </a>
+    </div>
+    <div class="sidebar-nav">
+      <h3 class="nav-title">Menú Principal</h3>
+      <ul>
+        <li class="nav-item">
+          <a href="#" class="nav-link">
+            <i class="fas fa-tachometer-alt"></i> Dashboard
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="#" class="nav-link active">
+            <i class="fas fa-chart-line"></i> Gráficas
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="#" class="nav-link">
+            <i class="fas fa-shopping-bag"></i> Productos
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="#" class="nav-link">
+            <i class="fas fa-users"></i> Clientes
+          </a>
+        </li>
+      </ul>
+
+      <h3 class="nav-title">Reportes</h3>
+      <ul>
+        <li class="nav-item">
+          <a href="#" class="nav-link">
+            <i class="fas fa-file-alt"></i> Ventas
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="#" class="nav-link">
+            <i class="fas fa-box"></i> Inventario
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Header Mobile -->
+  <div class="header-mobile" id="header-mobile">
+    <button class="menu-toggle" id="menu-toggle">
+      <i class="fas fa-bars"></i>
+    </button>
+    <div class="logo">HESED</div>
+    <div class="user-avatar">AD</div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <div class="header">
+      <h1 class="page-title">Reporte de Ventas en Bolivianos</h1>
+      <div class="user-menu">
+        <span>Administrador</span>
+        <div class="user-avatar">AD</div>
+      </div>
+    </div>
+
+    <!-- Filtros -->
+    <div class="filters-container">
+      <div class="filter-group">
+        <label for="periodo">Período:</label>
+        <select id="periodo" class="filter-select">
+          <option value="mes">Este Mes</option>
+          <option value="trimestre">Este Trimestre</option>
+          <option value="anio">Este Año</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label for="categoria">Categoría:</label>
+        <select id="categoria" class="filter-select">
+          <option value="todas">Todas</option>
+          <option value="abrigos">Abrigos</option>
+          <option value="vestidos">Vestidos</option>
+          <option value="camisas">Camisas</option>
+        </select>
+      </div>
+      <button class="filter-btn">
+        <i class="fas fa-filter"></i> Aplicar Filtros
+      </button>
+    </div>
+
+    <!-- Cards Resumen -->
+    <div class="cards-container">
+      <div class="card">
+        <div class="card-icon">
+          <i class="fas fa-money-bill-wave"></i>
+        </div>
+        <div class="card-content">
+          <h3 class="card-title">Ventas Totales</h3>
+          <p class="card-value">Bs. 24,580</p>
+          <div class="card-change positive">
+            <i class="fas fa-arrow-up"></i> 12% vs mes anterior
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-icon">
+          <i class="fas fa-shopping-bag"></i>
+        </div>
+        <div class="card-content">
+          <h3 class="card-title">Pedidos</h3>
+          <p class="card-value">186</p>
+          <div class="card-change positive">
+            <i class="fas fa-arrow-up"></i> 8% vs mes anterior
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-icon">
+          <i class="fas fa-tshirt"></i>
+        </div>
+        <div class="card-content">
+          <h3 class="card-title">Productos Vendidos</h3>
+          <p class="card-value">542</p>
+          <div class="card-change negative">
+            <i class="fas fa-arrow-down"></i> 3% vs mes anterior
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Gráficos -->
+    <div class="charts-container">
+      <div class="chart-card">
+        <div class="chart-header">
+          <h3 class="chart-title">Ventas Mensuales (Bs.)</h3>
+          <div class="chart-period">
+            <button class="period-btn active">2023</button>
+            <button class="period-btn">2022</button>
+          </div>
+        </div>
+        <div class="chart-container">
+          <canvas id="salesChart"></canvas>
+        </div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-header">
+          <h3 class="chart-title">Ventas por Categoría (Bs.)</h3>
+        </div>
+        <div class="chart-container">
+          <canvas id="categoriesChart"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tabla de ventas -->
+    <div class="table-container">
+      <div class="table-header">
+        <h3 class="table-title">Detalle de Ventas</h3>
+        <button class="export-btn">
+          <i class="fas fa-file-export"></i> Exportar
+        </button>
+      </div>
+      <table class="sales-table">
+        <thead>
+          <tr>
+            <th>Fecha</th>
+            <th>Producto</th>
+            <th>Categoría</th>
+            <th>Cantidad</th>
+            <th>Precio Unit. (Bs.)</th>
+            <th>Total (Bs.)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>15/06/2023</td>
+            <td>Abrigo de Lana</td>
+            <td>Abrigos</td>
+            <td>2</td>
+            <td>450.00</td>
+            <td>900.00</td>
+          </tr>
+          <tr>
+            <td>14/06/2023</td>
+            <td>Vestido Elegante</td>
+            <td>Vestidos</td>
+            <td>3</td>
+            <td>320.00</td>
+            <td>960.00</td>
+          </tr>
+          <tr>
+            <td>13/06/2023</td>
+            <td>Camisa Oxford</td>
+            <td>Camisas</td>
+            <td>5</td>
+            <td>180.00</td>
+            <td>900.00</td>
+          </tr>
+          <tr>
+            <td>12/06/2023</td>
+            <td>Jeans Slim Fit</td>
+            <td>Pantalones</td>
+            <td>1</td>
+            <td>250.00</td>
+            <td>250.00</td>
+          </tr>
+          <tr>
+            <td>11/06/2023</td>
+            <td>Chaqueta de Cuero</td>
+            <td>Chaquetas</td>
+            <td>2</td>
+            <td>550.00</td>
+            <td>1,100.00</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <script src="../js/graficas_venta.js"></script>
+</body>
+</html>
