@@ -8,7 +8,6 @@ const config = require('./config');
 // Importar módulos
 const auth = require('./rutas/autenticacion');
 const productRoutes = require('./modelos/Producto');
-const { testConnection } = require('./config');
 
 const app = express();
 
@@ -37,7 +36,7 @@ if (process.env.NODE_ENV !== 'production') {
 app.use(express.static(path.join(__dirname, '../Frontend')));
 
 // ✅ RUTAS DE LA API
-app.use('/api/autentificacion',auth);
+app.use('/api/autenticacion',auth);
 app.use('/api/products', productRoutes);
 
 // ✅ RUTAS DE PÁGINAS

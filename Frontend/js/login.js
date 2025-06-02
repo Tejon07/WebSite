@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         try {
             // ✅ Ruta corregida: /api/auth/login
-            const response = await fetch('/api/auth/login', {
+            const response = await fetch('/api/autenticacion/login', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -93,7 +93,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         try {
             // ✅ Ruta corregida: /api/auth/register
-            const response = await fetch('/api/auth/register', {
+            const response = await fetch('/api/autenticacion/register', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -184,7 +184,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const token = sessionStorage.getItem('token');
     if (token) {
         // Verificar si el token es válido
-        fetch('/api/auth/verify', {
+        fetch('/api/autenticacion/verify', {
             headers: {
                 'Authorization': `Bearer ${token}`
             }
